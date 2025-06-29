@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="fragments/head :: head"></head>
+
+<body>
+  <!-- NAVBAR -->
+  <header th:replace="fragments/navbar :: navbar"></header>
+
+  <div class="container py-5">
+    <h1 class="text-center mb-5">Mi cuenta</h1>
+
+    <!-- Vista para cliente -->
+    <div th:if="${rol == 'cliente'}">
+      <h3 class="mb-4">Pedidos realizados</h3>
+      <div th:if="${#lists.isEmpty(pedidos)}">
+        <p>No tienes pedidos aún.</p>
+      </div>
+      <ul class="list-group" th:if="${!#lists.isEmpty(pedidos)}">
+        <li class="list-group-item d-flex justify-content-between align-items-center" th:each="pedido : ${pedidos}">
+          <span>
+            Pedido #[[${pedido.idPedido}]] - Fecha: [[${pedido.fecha}]] -
+            Total: [[${pedido.getTotal()}]]
+          </span>
+          <a th:href="@{/pedido/{id}(id=${pedido.idPedido})}" class="btn btn-sm btn-outline-primary">
+            Ver detalle
+          </a>
+        </li>
+      </ul>
+
+      <!-- Favoritos del cliente -->
+      <h3 class="mt-5 mb-4">Mis productos favoritos</h3>
+      <div th:if="${favoritos.isEmpty()}">
+        <p>No tienes productos guardados en favoritos.</p>
+      </div>
+
+      <div class="row" th:if="${!favoritos.isEmpty()}">
+        <div class="col-md-4 mb-4" th:each="p : ${favoritos}">
+          <div class="card h-100">
+            <img th:src="@{${p.imagen}}" class="card-img-top" alt="Imagen del producto">
+            <div class="card-body">
+              <h5 class="card-title" th:text="${p.nombre}">Nombre</h5>
+              <p class="card-text mb-1"><strong>Tipo:</strong> <span th:text="${p.tipoFlor}"></span></p>
+              <p class="card-text mb-1"><strong>Precio:</strong> <span th:text="${p.precio} + ' €'"></span></p>
+            </div>
+            <div class="card-footer d-flex justify-content-between">
+              <a th:href="@{/producto/{id}(id=${p.idProducto})}" class="btn btn-sm btn-outline-primary">Ver detalle</a>
+              <form method="post" th:action="@{/favoritos/eliminar}" class="m-0">
+                <input type="hidden" name="productoId" th:value="${p.idProducto}" />
+                <button type="submit" class="btn btn-sm btn-danger">Eliminar</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Vista para floricultor -->
+    <div th:if="${rol} == 'floricultor'">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3 class="mb-0">Inventario de productos</h3>
+        <a href="/productos/nuevo" class="btn px-4 py-2" style="background-color: #d72684; color: white">
+          Añadir producto
+        </a>
+      </div>
+
+      <div th:if="${#lists.isEmpty(productos)}">
+        <p>No has añadido productos aún.</p>
+      </div>
+      <ul class="list-group" th:if="${!#lists.isEmpty(productos)}">
+        <li class="list-group-item d-flex justify-content-between align-items-center" th:each="producto : ${productos}">
+          <span> [[${producto.nombre}]] - [[${producto.precio}]] € </span>
+          <div>
+            <a th:href="@{'/producto/editar/' + ${producto.idProducto}}" class="btn btn-editar me-2">Editar</a>
+            <a th:href="@{'/eliminar/' + ${producto.idProducto}}" class="btn btn-eliminar">Eliminar</a>
+          </div>
+        </li>
+      </ul>
+
+      <h3 class="mb-0 mt-5">Valoraciones</h3>
+      <div class="mb-3 mt-3 mx-3">
+        <div class="d-flex justify-content-between align-items-center">
+          <div class="text-rosita" th:if="${numeroValoraciones > 0}">
+            <span th:with="media=${mediaValoraciones != null ? mediaValoraciones : 0}">
+              <span class="text-muted">
+                <span th:text="${#numbers.formatDecimal(media, 1, 1)}"></span>/5
+                (<span th:text="${numeroValoraciones}"></span> valoraciones)
+              </span>
+            </span>
+          </div>
+          <div class="text-muted" th:if="${numeroValoraciones == 0}">
+            <span class="font-weight-bold">Aún no hay valoraciones</span>
+          </div>
+        </div>
+        <div class="text-muted mt-2">
+          <p>
+            <strong>Media de valoraciones:</strong>
+            <span th:text="${mediaValoraciones}"></span>
+          </p>
+          <p>
+            <strong>Número de valoraciones:</strong>
+            <span th:text="${numeroValoraciones}"></span>
+          </p>
+        </div>
+      </div>
+
+      <div class="mt-5">
+        <h3 class="mb-3">Pedidos recibidos</h3>
+        <div th:if="${#lists.isEmpty(pedidosRecibidos)}">
+          <p>No has recibido pedidos aún.</p>
+        </div>
+        <ul class="list-group" th:if="${!#lists.isEmpty(pedidosRecibidos)}">
+          <li class="list-group-item d-flex justify-content-between align-items-center"
+            th:each="pedido : ${pedidosRecibidos}">
+            <span>
+              Pedido #[[${pedido.idPedido}]] - Cliente: [[${pedido.cliente.nombre}]]
+              - Fecha: [[${pedido.fecha}]] - Total: [[${pedido.getTotal()}]]
+            </span>
+            <a th:href="@{/pedido/{id}(id=${pedido.idPedido})}" class="btn btn-sm btn-outline-primary">Ver detalle</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Botón de logout -->
+    <div class="text-center mt-5">
+      <a href="/logout" class="btn px-4 py-2" style="background-color: #db2586; color: white">Cerrar sesión</a>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer th:replace="fragments/footer :: footer"></footer>
+</body>
+
+</html>

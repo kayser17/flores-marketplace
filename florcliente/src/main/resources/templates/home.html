@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head :: head"></head>
+<body>
+
+<!-- NAVBAR -->
+<header th:replace="fragments/navbar :: navbar"></header>
+
+<!-- HERO SECTION -->
+<section class="position-relative text-white" style="background-image: url('/images/fondo-flores.jpg'); background-size: cover; background-position: center; height: 800px;">
+  
+    <!-- Capa oscura encima de la imagen -->
+    <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.4); z-index: 1;"></div>
+    
+    <!-- Contenido encima del overlay -->
+    <div class="d-flex flex-column justify-content-center align-items-start h-100 px-5 ms-5" style="max-width: 50%; position: relative; z-index: 2;">
+      <h1 class="display-4 fw-bold lh-sm">
+        Entrega de flores en el mismo día para sorprender en cualquier ocasión especial
+      </h1>
+      <p class="lead mt-3">Entrega rápida y personalizada en tu ciudad</p>
+      <a href="/tienda" class="btn btn-primary mt-4 px-5 py-2" style="background-color: #D72684; border: none;">Comprar ahora</a>
+    </div>
+  </section>
+  
+  <div th:replace="fragments/direccionEntrega :: selectorUbicacion"></div>
+  <div th:replace="fragments/categorizacionCircular :: categoriasCirculares"></div>
+
+  <section class="container-fluid py-5 px-5 mx-auto">
+    <h3 class="mb-4">Algunas de nuestras flores</h3>
+  
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-6 g-4 mt-3">
+      <div class="col" th:each="producto, iterStat : ${productos}" th:if="${iterStat.count <= 6}">
+        <a th:href="@{/producto/{id}(id=${producto.idProducto})}" style="text-decoration: none; color: inherit;"></a>
+        <div class="card h-100 border-0 shadow-sm">
+          <div class="product-image-container">
+              <img th:src="${producto.imagen}" class="card-img-top" th:alt="${producto.nombre}" />
+            </a>
+          </div>
+          <div class="card-body px-2">
+            <h6 class="card-title mb-0 text-rosita" th:text="${producto.nombre}">Nombre</h6>
+            <p class="mb-1 small text-muted" th:text="${producto.floricultor.nombre}">Floricultor</p>
+            <div class="mb-1">
+            </div>
+            <p class="fw-semibold mb-0">Precio: <span th:text="${producto.precio} + '€'">0€</span></p>
+            <a th:href="@{/producto/{id}(id=${producto.idProducto})}" class="stretched-link"></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+    <div class="text-center mt-5">
+      <a href="/tienda" class="btn px-4 py-2" style="background-color: #D72684; color: white;">VER TODAS</a>
+    </div>
+  </section>
+  
+  <section style="background-color: #f2f2f5;" class="py-5">
+    <div class="container-fluid px-5 ms-5">
+      <h2 class="fw-semibold mb-4">Flor.es #1 Marketplace de flores de España</h2>
+      <p class="mb-3">
+        <strong>Flor.es</strong> es el marketplace de flores más grande de España, conectando a floricultores locales con clientes que buscan calidad, frescura y entrega rápida.
+        Nos especializamos en ofrecer una experiencia de compra sencilla y personalizada, permitiéndote elegir entre una amplia variedad de ramos diseñados para cada ocasión, 
+        desde celebraciones especiales hasta muestras de cariño espontáneas.
+      </p>
+      <p>
+        Apostamos por la producción local y sostenible, garantizando flores recién cortadas que mantienen su belleza y aroma por más tiempo. Además, nuestra red de floricultores y socios logísticos 
+        nos permite ofrecer entregas el mismo día en numerosas ciudades, asegurando que tu regalo llegue justo a tiempo para sorprender. Descubre una nueva forma de regalar flores con la confianza 
+        de una plataforma diseñada para ofrecer calidad, rapidez y la mejor experiencia de compra.
+      </p>
+    </div>
+  </section>
+
+<!-- FOOTER -->
+<footer th:replace="fragments/footer :: footer"></footer>
+<div th:replace="fragments/scripts :: scriptsUbicacion"></div>
+
+</body>
+</html>

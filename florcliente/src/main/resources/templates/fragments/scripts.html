@@ -1,0 +1,57 @@
+<div th:fragment="scriptsUbicacion">
+    <script src="https://maps.googleapis.com/maps/api/js?key=API_KEY&libraries=places"></script>    
+    <script>
+      let map;
+      let marker;
+  
+      function initMap() {
+        const mapElement = document.getElementById("map");
+        if (!mapElement) return;
+  
+        map = new google.maps.Map(mapElement, {
+          center: { lat: 40.4168, lng: -3.7038 },
+          zoom: 13,
+        });
+  
+        const input = document.getElementById("direccion");
+        if (!input) return;
+  
+        const autocomplete = new google.maps.places.Autocomplete(input);
+  
+        autocomplete.addListener("place_changed", () => {
+          const place = autocomplete.getPlace();
+          const lat = place.geometry.location.lat();
+          const lng = place.geometry.location.lng();
+  
+          if (marker) marker.setMap(null);
+          marker = new google.maps.Marker({ map: map, position: { lat, lng } });
+          map.setCenter({ lat, lng });
+  
+          document.getElementById("direccionForm").dataset.lat = lat;
+          document.getElementById("direccionForm").dataset.lng = lng;
+        });
+      }
+  
+      window.addEventListener("load", initMap);
+  
+      document.addEventListener("DOMContentLoaded", () => {
+        const form = document.getElementById("direccionForm");
+        if (!form) return;
+  
+        form.addEventListener("submit", (e) => {
+          e.preventDefault();
+          const lat = form.dataset.lat;
+          const lng = form.dataset.lng;
+  
+          if (!lat || !lng) {
+            alert("Por favor, selecciona una dirección válida.");
+            return;
+          }
+  
+          fetch(`/guardarUbicacion?lat=${lat}&lng=${lng}`, { method: 'POST' })
+            .then(() => location.reload());
+        });
+      });
+    </script>
+  </div>
+  

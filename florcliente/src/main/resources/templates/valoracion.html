@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="fragments/head :: head"></head>
+
+<body>
+    <header th:replace="fragments/navbar :: navbar"></header>
+
+    <div class="container py-5">
+        <h2 class="mb-4">Valorar Pedido</h2>
+
+        <form id="valoracionForm">
+            <input type="hidden" id="pedidoId" th:value="${pedidoId}" />
+
+            <div class="mb-3">
+                <label for="calificacionPedido" class="form-label">Calificación del producto (1-5):</label>
+                <input type="number" id="calificacionPedido" class="form-control" min="1" max="5" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="calificacionLogistica" class="form-label">Calificación de la entrega (1-5):</label>
+                <input type="number" id="calificacionLogistica" class="form-control" min="1" max="5" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="comentario" class="form-label">Comentario:</label>
+                <textarea id="comentario" class="form-control" rows="4" required></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-success">Enviar valoración</button>
+            <a href="/cuenta" class="btn btn-secondary ms-2">Cancelar</a>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById("valoracionForm").addEventListener("submit", function (e) {
+            e.preventDefault();
+
+            const pedidoId = document.getElementById("pedidoId").value;
+            const calificacionPedido = document.getElementById("calificacionPedido").value;
+            const calificacionLogistica = document.getElementById("calificacionLogistica").value;
+            const comentario = document.getElementById("comentario").value;
+
+            const valoracion = {
+                pedido: {
+                    idPedido: parseInt(pedidoId) // ✅ solo mandamos el id
+                },
+                calificacionPedido: parseInt(calificacionPedido),
+                calificacionLogistica: parseInt(calificacionLogistica),
+                comentario: comentario
+            };
+
+            fetch("http://localhost:8080/valoraciones", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(valoracion)
+            })
+                .then(() => window.location.href = "/cuenta")
+                .catch(() => alert("Error al guardar la valoración"));
+        });
+    </script>
+
+
+    <footer th:replace="fragments/footer :: footer"></footer>
+</body>
+
+</html>

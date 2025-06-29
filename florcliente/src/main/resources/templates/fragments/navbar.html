@@ -1,0 +1,70 @@
+<!-- templates/fragments/navbar.html -->
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+    <header th:fragment="navbar" class="sticky-top bg-white shadow-sm" style="z-index: 1030;">
+
+    <!-- Top Info Bar -->
+    <div class="bg-white border-bottom sin-margen-menu">
+        <div class="container-fluid d-flex justify-content-between align-items-center px-3 px-lg-5">
+        <!-- Logo -->
+        <a class="navbar-brand d-flex align-items-center" href="/home">
+          <img src="/images/logo.png" alt="Flor.es Logo" style="height: 160px;" class="me-2">
+        </a>
+
+        <!-- Info derecha -->
+        <div class="d-flex align-items-center gap-4">
+          <div class="text-end">
+            <small class="d-block text-muted">24/7 SOPORTE</small>
+            <i class="bi bi-telephone-fill"></i>
+            <strong>(+34) 630539981</strong>
+          </div>
+          <div class="vr"></div>
+          <div class="text-end">
+            <small class="d-block text-muted">MI CUENTA</small>
+          
+            <!-- Si el usuario está logueado -->
+            <a th:if="${usuario != null}" href="/cuenta" class="text-dark text-decoration-none">
+              <i class="bi bi-person fs-4"></i>
+              <span th:text="${usuario.nombre}">Cuenta</span>
+            </a>
+          
+            <!-- Si NO está logueado -->
+            <a th:if="${usuario == null}" href="/login" class="text-dark text-decoration-none">
+              <i class="bi bi-person fs-4"></i>
+              Log in
+            </a>
+          </div>
+<div class="text-end">
+  <small class="d-block text-muted">CARRITO</small>
+  <a href="/carrito/ver" class="text-dark text-decoration-none">
+    <i class="bi bi-cart fs-4"></i>
+    <span th:text="${#numbers.formatDecimal(totalCarrito, 1, 'COMMA', 2, 'POINT')} + ' €'">0.00 €</span>
+  </a>
+</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Menú principal -->
+    <nav class="bg-white border-bottom border-top">
+      <div class="container-fluid px-4">
+        <ul class="nav">
+          <li class="nav-item">
+            <a class="nav-link text-dark" href="/tienda">Tienda</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-dark" href="/home/ramos">Ramos</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-dark" href="/flores">Personaliza tu ramo</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-dark" href="/floricultores">Nuestros floricultores</a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+  </header>
+</body>
+</html>

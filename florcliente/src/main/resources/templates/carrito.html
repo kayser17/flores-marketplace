@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="fragments/head :: head"></head>
+
+<body>
+
+  <!-- NAVBAR -->
+  <header th:replace="fragments/navbar :: navbar"></header>
+
+  <main class="container py-5 d-flex justify-content-between">
+
+    <!-- Lista de productos -->
+    <div class="col-md-8">
+      <div th:if="${#lists.isEmpty(carrito)}">
+        <p>Tu carrito está vacío.</p>
+      </div>
+
+      <div th:each="linea : ${carrito}"
+        class="card mb-3 p-3 d-flex flex-row justify-content-between align-items-center producto-carrito" th:attr="data-id-producto=${linea.producto.idProducto},
+         data-precio=${linea.precioUnitario},
+         data-email-floricultor=${linea.producto.floricultor.email},
+         data-ciudad-floricultor=${linea.producto.floricultor.ubicacion},
+         data-stock=${linea.producto.cantidad}">
+        <div class="d-flex align-items-center">
+          <!-- Botón eliminar -->
+          <form method="post" th:action="@{/carrito/eliminar}">
+            <input type="hidden" name="idProducto" th:value="${linea.producto.idProducto}" />
+            <button class="btn btn-link text-danger me-2" style="font-size: 1.2rem;"
+              title="Quitar del carrito">×</button>
+          </form>
+          <img th:src="@{${linea.producto.imagen}}" th:alt="${linea.producto.nombre}" class="img-thumbnail"
+            style="width: 100px;">
+          <div class="ms-3">
+            <h6 class="mb-1" th:text="${linea.producto.nombre}">Nombre Producto</h6>
+            <small class="text-muted" th:text="${linea.producto.floricultor.nombre}">Nombre Floricultor</small>
+          </div>
+        </div>
+        <div class="d-flex align-items-center gap-3">
+          <span th:text="${#numbers.formatDecimal(linea.precioUnitario, 1, 'COMMA', 2, 'POINT')} + '€'">Precio</span>
+          <div class="btn-group" role="group">
+            <form method="post" th:action="@{/carrito/restar}">
+              <input type="hidden" name="idProducto" th:value="${linea.producto.idProducto}" />
+              <button class="btn btn-outline-secondary btn-sm">−</button>
+            </form>
+            <span class="contador" th:text="${linea.cantidad}">1</span>
+            <input type="hidden" class="cantidad" th:value="${linea.cantidad}" />
+            <form method="post" th:action="@{/carrito/sumar}">
+              <input type="hidden" name="idProducto" th:value="${linea.producto.idProducto}" />
+              <button class="btn btn-outline-secondary btn-sm">+</button>
+            </form>
+          </div>
+          <strong th:text="${#numbers.formatDecimal(linea.subtotal, 1, 'COMMA', 2, 'POINT')} + '€'">Total línea</strong>
+        </div>
+      </div>
+    </div>
+
+    <!-- RESUMEN -->
+    <div class="col-md-3">
+      <div class="card p-3">
+
+        <!-- Mensajes de error -->
+        <div id="errorCheckout" class="alert alert-danger text-center d-none">
+          Todos los productos del carrito deben ser del mismo floricultor.
+        </div>
+        <div id="errorCampos" class="alert alert-danger text-center d-none mt-2">Formato incorrecto</div>
+        <div id="mensajeSesion" class="alert alert-warning text-center d-none mt-2">
+          Debes iniciar sesión para completar tu pedido. Redirigiendo...
+        </div>
+
+        <h5>Datos</h5>
+
+        <!-- Ciudad -->
+        <select name="ciudad" class="form-select my-2" required>
+          <option value="">Selecciona una ciudad</option>
+          <option value="Madrid">Madrid</option>
+          <option value="Barcelona">Barcelona</option>
+          <option value="Valencia">Valencia</option>
+          <option value="Sevilla">Sevilla</option>
+          <option value="Zaragoza">Zaragoza</option>
+          <option value="Málaga">Málaga</option>
+          <option value="Bilbao">Bilbao</option>
+          <option value="Alicante">Alicante</option>
+          <option value="Valladolid">Valladolid</option>
+          <option value="Murcia">Murcia</option>
+        </select>
+
+        <!-- Dirección -->
+        <input type="text" name="direccion" class="form-control my-2" placeholder="Dirección exacta" required
+          minlength="5" maxlength="100" />
+
+        <!-- Código postal -->
+        <input type="number" name="codigoPostal" class="form-control my-2" placeholder="Código postal" required
+          min="10000" max="99999" oninput="this.value = this.value.slice(0, 5)" />
+
+        <hr>
+        <div class="d-flex justify-content-between">
+          <span>Subtotal</span>
+          <strong th:text="${#numbers.formatDecimal(total, 1, 'COMMA', 2, 'POINT')} + '€'">0€</strong>
+        </div>
+
+        <label class="mt-3">Envío</label>
+        <select class="form-select mb-3" id="envio">
+          <option value="4.5">Envío normal 4,5€</option>
+          <option value="0">Recogida en persona 0€</option>
+        </select>
+
+        <div class="d-flex justify-content-between">
+          <span>Total</span>
+          <strong id="totalFinal" class="text-danger" th:data-subtotal="${total}"
+            th:text="${#numbers.formatDecimal(total + 4.5, 1, 'COMMA', 2, 'POINT')} + '€'">0€</strong>
+        </div>
+
+        <script>
+          document.addEventListener("DOMContentLoaded", function () {
+            const envio = document.getElementById("envio");
+            const totalElem = document.getElementById("totalFinal");
+            const subtotal = parseFloat(totalElem.dataset.subtotal);
+
+            envio.addEventListener("change", function () {
+              const envioCoste = parseFloat(envio.value);
+              const totalFinal = subtotal + envioCoste;
+              totalElem.innerText = totalFinal.toFixed(2).replace(".", ",") + "€";
+            });
+          });
+        </script>
+
+
+        <form onsubmit="return false;">
+          <button id="checkoutBtn" class="btn btn-principal mt-3 w-100"
+            th:attr="data-email-cliente=${usuario != null ? usuario.email : 'anonimo'}">
+            COMPLETAR
+          </button>
+        </form>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer th:replace="fragments/footer :: footer"></footer>
+
+  <!-- SCRIPT DE CHECKOUT -->
+  <script>
+    function mostrarError(mensaje) {
+      const errorDiv = document.getElementById("errorCampos");
+      errorDiv.textContent = mensaje;
+      errorDiv.classList.remove("d-none");
+    }
+
+    document.getElementById("checkoutBtn").addEventListener("click", function () {
+      const ciudad = document.querySelector("select[name='ciudad']").value.trim();
+      const direccion = document.querySelector("input[name='direccion']").value.trim();
+      const cp = document.querySelector("input[name='codigoPostal']").value.trim();
+
+      if (!ciudad || !direccion || !cp) {
+        mostrarError("Por favor, completa todos los campos de dirección.");
+        return;
+      }
+      if (isNaN(cp) || cp.length !== 5) {
+        mostrarError("El código postal debe ser numérico y tener 5 cifras.");
+        return;
+      }
+
+      const destino = `${direccion}, ${ciudad}, ${cp}`;
+      const emailCliente = this.dataset.emailCliente;
+      const productos = Array.from(document.querySelectorAll(".producto-carrito"));
+
+      if (productos.length === 0) {
+        mostrarError("El carrito está vacío.");
+        return;
+      }
+
+      const emailFloricultor = productos[0].dataset.emailFloricultor;
+      if (!emailCliente || emailCliente === "anonimo") {
+        const aviso = document.getElementById("mensajeSesion");
+        aviso.classList.remove("d-none");
+        setTimeout(() => {
+          window.location.href = "/login";
+        }, 2500);
+        return;
+      }
+      const ciudadFloricultor = productos[0].dataset.ciudadFloricultor;
+
+      if (ciudadFloricultor !== ciudad) {
+        mostrarError(`Solo puedes comprar productos de floricultores que operen en la ciudad que has elegido. El floricultor está en ${ciudadFloricultor}.`);
+        return;
+      }
+
+      const mismoFloricultor = productos.every(prod =>
+        prod.dataset.emailFloricultor === emailFloricultor
+      );
+      if (!mismoFloricultor) {
+        document.getElementById("errorCheckout").classList.remove("d-none");
+        return;
+      }
+
+      for (const prod of productos) {
+        const cantidadDeseada = parseInt(prod.querySelector(".cantidad").value);
+        const stockDisponible = parseInt(prod.dataset.stock);
+        const nombreProducto = prod.querySelector("h6").innerText;
+
+        if (cantidadDeseada > stockDisponible) {
+          mostrarError(`No puedes añadir más unidades de "${nombreProducto}" de las disponibles (${stockDisponible}).`);
+          return;
+        }
+      }
+
+      const lineasPedido = productos.map(prod => {
+        return {
+          producto: { idProducto: parseInt(prod.dataset.idProducto) },
+          cantidad: parseInt(prod.querySelector(".cantidad").value),
+          precioUnitario: parseFloat(prod.dataset.precio)
+        };
+      });
+
+
+      const pedido = {
+        cliente: { email: emailCliente },
+        floricultor: { email: emailFloricultor },
+        estado: "PENDIENTE",
+        destino: destino,
+        fecha: new Date().toISOString(),
+        lineasPedido: lineasPedido
+      };
+
+      fetch("http://localhost:8080/pedidos", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(pedido)
+      })
+        .then(res => {
+          if (!res.ok) throw new Error("Error al crear el pedido.");
+          return res.json();
+        })
+        .then(() => fetch("/carrito/vaciar", { method: "POST" }))
+        .then(() => window.location.href = "/pedido/confirmado")
+        .catch(err => {
+          mostrarError("Hubo un problema al procesar tu pedido, debes iniciar sesion como cliente: " + err.message);
+        });
+    });
+  </script>
+
+</body>
+
+</html>

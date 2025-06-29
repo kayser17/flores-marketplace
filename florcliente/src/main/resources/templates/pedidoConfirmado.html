@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head :: head"></head>
+<body>
+
+<!-- NAVBAR -->
+<header th:replace="fragments/navbar :: navbar"></header>
+
+<main class="container py-5 text-center">
+
+  <div class="card shadow p-5 mx-auto" style="max-width: 600px;">
+    <img src="/images/logo.png" alt="Pedido confirmado"  class="d-block mx-auto mb-4" style="width: 120px; margin-bottom: 20px;">
+
+    <h2 class="mb-3">¡Gracias por tu compra!</h2>
+    <p class="mb-4">Tu pedido ha sido procesado correctamente. Muy pronto lo estaremos preparando para ti.</p>
+
+    <!-- Botón que vacía carrito y redirige -->
+    <form method="post" action="/carrito/vaciar">
+      <button class="btn btn-principal" type="submit">Volver al inicio</button>
+    </form>
+  </div>
+
+</main>
+
+<!-- FOOTER -->
+<footer th:replace="fragments/footer :: footer"></footer>
+
+</body>
+</html>

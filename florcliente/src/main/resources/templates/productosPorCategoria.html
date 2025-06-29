@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head :: head"></head>
+<body>
+
+<header th:replace="fragments/navbar :: navbar"></header>
+
+<!-- Breadcrumbs -->
+<nav aria-label="breadcrumb" class="px-5 py-2 ms-5 mt-4">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item">
+        <a href="/home" class="text-decoration-none text-rosita">Inicio</a>
+      </li>
+      <li class="breadcrumb-item active text-capitalize" aria-current="page" th:text="${tipoFlor}">
+        Categoría
+      </li>
+    </ol>
+  </nav>
+<div th:replace="fragments/direccionEntrega :: selectorUbicacion"></div> 
+<div th:replace="fragments/categorizacionCircular :: categoriasCirculares"></div>
+<div th:replace="fragments/filtro :: filtroBusqueda(filtroAction='/home/' + ${tipoFlor})"></div>
+
+
+<section class="container-fluid py-3 px-5 mx-auto">
+    <h2 class="mb-4 text-start" th:text="${tituloCategoria}">Categoría</h2>
+
+  <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-6 g-4 mt-3">
+    <div class="col" th:each="producto : ${productos}">
+      <div class="card h-100 border-0 shadow-sm">
+        <div class="product-image-container">
+          <a th:href="@{/producto/{id}(id=${producto.idProducto})}">
+            <img th:src="${producto.imagen}" class="card-img-top" th:alt="${producto.nombre}" />
+          </a>
+        </div>
+        <div class="card-body px-2">
+          <h6 class="card-title mb-0 text-rosita" th:text="${producto.nombre}">Nombre</h6>
+          <p class="mb-1 small text-muted" th:text="${producto.floricultor.nombre}">Floricultor</p>
+          <div class="mb-1">
+          </div>
+          <p class="fw-semibold mb-0">Precio: <span th:text="${producto.precio} + '€'">0€</span></p>
+          <a th:href="@{/producto/{id}(id=${producto.idProducto})}" class="stretched-link"></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer th:replace="fragments/footer :: footer"></footer>
+<div th:replace="fragments/scripts :: scriptsUbicacion"></div>
+
+</body>
+</html>
+

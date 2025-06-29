@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="fragments/head :: head"></head>
+
+<body>
+
+  <header th:replace="fragments/navbar :: navbar"></header>
+
+  <div class="container py-5">
+    <h2 class="mb-4">Detalle del pedido</h2>
+
+    <div th:if="${pedido != null}">
+      <p><strong>ID del pedido:</strong> <span th:text="${pedido.idPedido}"></span></p>
+      <p><strong>Fecha:</strong> <span th:text="${pedido.fecha}"></span></p>
+      <p><strong>Estado:</strong> <span th:text="${pedido.estado}"></span></p>
+
+      <!-- Mostrar el otro participante según el rol -->
+      <div th:if="${rol == 'cliente'}">
+        <p><strong>Floricultor:</strong> <span th:text="${pedido.floricultor.nombre}"></span></p>
+      </div>
+      <div th:if="${rol == 'floricultor'}">
+        <p><strong>Cliente:</strong> <span th:text="${pedido.cliente.nombre}"></span></p>
+      </div>
+
+      <h4 class="mt-4">Productos en el pedido:</h4>
+      <ul class="list-group">
+        <li class="list-group-item d-flex align-items-center" th:each="linea : ${pedido.lineasPedido}">
+          <!-- Imagen del producto -->
+          <img th:src="${linea.producto.imagen}" th:alt="${linea.producto.nombre}" class="rounded me-3"
+            style="width: 80px; height: 80px; object-fit: cover;" />
+
+          <!-- Info del producto -->
+          <div>
+            <p class="mb-1 fw-semibold" th:text="${linea.producto.nombre}">Nombre del producto</p>
+            <small>
+              Cantidad: <span th:text="${linea.cantidad}"></span> |
+              Precio unidad: <span th:text="${linea.producto.precio} + ' €'"></span>
+            </small>
+          </div>
+        </li>
+      </ul>
+
+      <p class="mt-3"><strong>Total:</strong> <span th:text="${pedido.total} + ' €'"></span></p>
+    </div>
+
+    <div th:if="${pedido == null}">
+      <p class="text-danger">No se pudo cargar el pedido.</p>
+    </div>
+    <!-- Botón para FLORICULTOR: marcar como ENVIADO -->
+    <div th:if="${rol == 'floricultor' and pedido.estado.toUpperCase() == 'PENDIENTE'}" class="mt-4">
+      <button class="btn btn-warning" th:onclick="'marcarEnviado(' + ${pedido.idPedido} + ')'">
+        Marcar como enviado
+      </button>
+    </div>
+
+    <script>
+      function marcarEnviado(id) {
+        fetch("http://localhost:8080/pedidos/" + id + "/enviar", {
+          method: "POST"
+        }).then(() => location.reload())
+          .catch(() => alert("Error al marcar como enviado"));
+      }
+
+    </script>
+    <!-- Botón para CLIENTE: marcar como RECIBIDO -->
+    <div th:if="${rol == 'cliente' and pedido.estado.toUpperCase() == 'ENVIADO'}" class="mt-4">
+      <button class="btn btn-success" th:onclick="'marcarRecibido(' + ${pedido.idPedido} + ')'">
+        Pedido recibido
+      </button>
+    </div>
+
+    <script>
+      function marcarRecibido(id) {
+        fetch("http://localhost:8080/pedidos/" + id + "/completar", {
+          method: "POST"
+        }).then(() => location.reload())
+          .catch(() => alert("Error al marcar como completado"));
+      }
+    </script>
+
+
+    <!-- Botón para dejar valoración -->
+    <div th:if="${rol == 'cliente' and pedido.estado == 'COMPLETADO' and pedido.valoracion == null}" class="mt-4">
+      <a th:href="@{'/valoraciones/nueva?pedidoId=' + ${pedido.idPedido}}" class="btn btn-primary">Valorar pedido</a>
+    </div>
+
+    <!-- Mostrar valoración si ya existe -->
+    <div th:if="${pedido.valoracion != null}" class="mt-4">
+      <p><strong>Tu valoración:</strong></p>
+      <p>Calificación del producto: <span th:text="${pedido.valoracion.calificacionPedido}"></span>/5</p>
+      <p>Calificación de la entrega: <span th:text="${pedido.valoracion.calificacionLogistica}"></span>/5</p>
+      <p>Comentario: <em th:text="${pedido.valoracion.comentario}"></em></p>
+    </div>
+
+
+    <a href="/cuenta" class="btn mt-4" style="background-color: #D72684; color: white;">Volver</a>
+  </div>
+
+  <footer th:replace="fragments/footer :: footer"></footer>
+</body>
+
+</html>

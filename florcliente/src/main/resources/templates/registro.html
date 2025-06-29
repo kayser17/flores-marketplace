@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head :: head"></head>
+<body class="d-flex flex-column min-vh-100">
+
+<!-- NAVBAR -->
+<header th:replace="fragments/navbar :: navbar"></header>
+
+<!-- REGISTRO -->
+<main class="flex-grow-1 bg-cover d-flex justify-content-center align-items-center py-5"
+  style="background-image: url('/images/fondo-flores.jpg'); background-size: cover; background-position: center;">
+  
+  <div class="card text-center shadow-lg p-4 w-100"
+    style="max-width: 400px; background-color: rgba(255, 255, 255, 0.95)">
+    
+    <img src="/images/logo-solo.png" alt="Logo" class="mx-auto" style="height: 100px" />
+    <h5 class="my-3">Registro de Usuario</h5>
+
+    <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+    <form th:action="@{/registro}" method="post">
+      <input type="text" name="nombre" class="form-control mb-3" placeholder="Nombre" required />
+      <input type="email" name="email" class="form-control mb-3" placeholder="Correo electrónico" required />
+      <input type="password" name="password" class="form-control mb-3" placeholder="Contraseña" required />
+
+      <!-- Select Ciudad (solo para floricultores) -->
+      <div id="ciudadGroup" class="mb-3" style="display: none;">
+        <label for="ciudad">Ciudad:</label>
+        <select name="ciudad" id="ciudad" class="form-select">
+          <option value="">Selecciona una ciudad</option>
+          <option value="Madrid">Madrid</option>
+          <option value="Barcelona">Barcelona</option>
+          <option value="Valencia">Valencia</option>
+          <option value="Sevilla">Sevilla</option>
+          <option value="Zaragoza">Zaragoza</option>
+          <option value="Málaga">Málaga</option>
+          <option value="Bilbao">Bilbao</option>
+          <option value="Alicante">Alicante</option>
+          <option value="Valladolid">Valladolid</option>
+          <option value="Murcia">Murcia</option>
+        </select>
+      </div>
+
+      <!-- Dirección exacta -->
+      <div id="direccionGroup" class="mb-3" style="display: none;">
+        <label for="direccion">Dirección exacta:</label>
+        <input type="text" id="direccion" name="direccion" class="form-control" placeholder="Calle y número" />
+      </div>
+
+      <!-- Coordenadas -->
+      <input type="hidden" name="lat" id="lat">
+      <input type="hidden" name="lng" id="lng">
+
+      <select id="tipoUsuario" name="tipoUsuario" class="form-select mb-3">
+        <option value="cliente">Cliente</option>
+        <option value="floricultor">Floricultor</option>
+      </select>
+
+      <button type="submit" class="btn w-100" style="background-color: #d72684; color: white">
+        Registrarse
+      </button>
+    </form>
+
+    <a href="/home" class="btn btn-light mt-3">Volver a la home</a>
+  </div>
+</main>
+
+<!-- FOOTER -->
+<footer th:replace="fragments/footer :: footer"></footer>
+
+<!-- Google Maps -->
+<script src="https://maps.googleapis.com/maps/api/js?key=API_KEY&libraries=places"></script>
+<script>
+  let autocomplete;
+
+  function initAutocomplete() {
+    const input = document.getElementById("direccion");
+    if (!input) return;
+
+    autocomplete = new google.maps.places.Autocomplete(input);
+    autocomplete.addListener("place_changed", () => {
+      const place = autocomplete.getPlace();
+      if (!place.geometry) return;
+      document.getElementById("lat").value = place.geometry.location.lat();
+      document.getElementById("lng").value = place.geometry.location.lng();
+    });
+  }
+
+  window.addEventListener("load", initAutocomplete);
+
+  const tipoUsuarioSelect = document.getElementById("tipoUsuario");
+  const ciudadGroup = document.getElementById("ciudadGroup");
+  const direccionGroup = document.getElementById("direccionGroup");
+
+  tipoUsuarioSelect.addEventListener("change", () => {
+    const isFloricultor = tipoUsuarioSelect.value === "floricultor";
+    ciudadGroup.style.display = isFloricultor ? "block" : "none";
+    direccionGroup.style.display = isFloricultor ? "block" : "none";
+  });
+
+  window.addEventListener("load", () => {
+    const isFloricultor = tipoUsuarioSelect.value === "floricultor";
+    ciudadGroup.style.display = isFloricultor ? "block" : "none";
+    direccionGroup.style.display = isFloricultor ? "block" : "none";
+  });
+
+  document.querySelector("form").addEventListener("submit", function (e) {
+    if (tipoUsuarioSelect.value === "floricultor") {
+      const ciudad = document.getElementById("ciudad").value;
+      const direccion = document.getElementById("direccion").value;
+      const lat = document.getElementById("lat").value;
+      const lng = document.getElementById("lng").value;
+
+      if (!ciudad || !direccion || !lat || !lng) {
+        e.preventDefault();
+        alert("Por favor, completa todos los campos de ubicación si eres floricultor.");
+      }
+    }
+  });
+</script>
+</body>
+</html>

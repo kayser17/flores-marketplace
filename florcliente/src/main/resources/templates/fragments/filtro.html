@@ -1,0 +1,97 @@
+<div th:fragment="filtroBusqueda(filtroAction)" class="px-5">
+  <form method="get" th:action="@{${filtroAction}}" class="rounded-4 p-4 bg-white shadow-sm mb-5"
+    style="border: 2px solid #f2f2f2;">
+
+    <div class="row g-4 align-items-end">
+
+      <!-- Color -->
+      <div class="col-md-3">
+        <label for="color" class="form-label fw-semibold">Color</label>
+        <select class="form-select rounded-pill border-rosita" name="color" id="color">
+          <option value="" th:selected="${color == null or color == ''}">Todos</option>
+          <option value="Rojo" th:selected="${color == 'Rojo'}">Rojo</option>
+          <option value="Rosa" th:selected="${color == 'Rosa'}">Rosa</option>
+          <option value="Blanco" th:selected="${color == 'Blanco'}">Blanco</option>
+          <option value="Amarillo" th:selected="${color == 'Amarillo'}">Amarillo</option>
+          <option value="Naranja" th:selected="${color == 'Naranja'}">Naranja</option>
+          <option value="Violeta" th:selected="${color == 'Violeta'}">Violeta</option>
+          <option value="Azul" th:selected="${color == 'Azul'}">Azul</option>
+          <option value="Verde" th:selected="${color == 'Verde'}">Verde</option>
+          <option value="Multicolor" th:selected="${color == 'Multicolor'}">Multicolor</option>
+          <option value="Otro" th:selected="${color == 'Otro'}">Otro</option>
+        </select>
+      </div>
+
+      <!-- Ocasión -->
+      <div class="col-md-2">
+        <label for="ocasion" class="form-label fw-semibold">Ocasión</label>
+        <select class="form-select rounded-pill border-rosita" name="ocasion" id="ocasion">
+          <option value="" th:selected="${ocasion == null or ocasion == ''}">Todas</option>
+          <option value="Cumpleaños" th:selected="${ocasion == 'Cumpleaños'}">Cumpleaños</option>
+          <option value="Aniversario" th:selected="${ocasion == 'Aniversario'}">Aniversario</option>
+          <option value="Condolencias" th:selected="${ocasion == 'Condolencias'}">Condolencias</option>
+          <option value="Nacimiento" th:selected="${ocasion == 'Nacimiento'}">Nacimiento</option>
+          <option value="Agradecimiento" th:selected="${ocasion == 'Agradecimiento'}">Agradecimiento</option>
+          <option value="San Valentín" th:selected="${ocasion == 'San Valentín'}">San Valentín</option>
+        </select>
+      </div>
+
+      <!-- Rango de precio-->
+      <div class="col-md-4">
+        <label class="form-label fw-semibold">Precio (€)</label>
+        <div class="bg-light px-4 py-3 rounded-4 border border-rosita position-relative">
+
+          <div class="d-flex justify-content-between mb-2 small text-muted">
+            <span>Min: <span id="minPrecioLabel">0</span> €</span>
+            <span>Max: <span id="maxPrecioLabel">200</span> €</span>
+          </div>
+
+          <div class="d-flex justify-content-center gap-3">
+            <input type="range" class="form-range custom-range" name="precioMin" id="precioMin" min="0" max="200"
+              step="1" th:value="${precioMin != null} ? ${precioMin} : 0" oninput="updatePrecioLabel()">
+            <input type="range" class="form-range custom-range" name="precioMax" id="precioMax" min="0" max="200"
+              step="1" th:value="${precioMax != null} ? ${precioMax} : 200" oninput="updatePrecioLabel()">
+          </div>
+
+        </div>
+      </div>
+      <!-- Disponible -->
+      <div class="col-md-2">
+        <label class="form-label fw-semibold">Disponibilidad</label>
+        <div class="form-check mt-2">
+          <input class="form-check-input border-rosita" type="checkbox" name="disponible" id="disponible"
+            th:checked="${disponible != null}">
+          <label class="form-check-label" for="disponible">
+            Solo disponibles
+          </label>
+        </div>
+      </div>
+
+      <!-- Botón centrado -->
+      <div class="col-12 text-center mt-3 pt-5">
+        <button type="submit" class="btn btn-principal px-5 ">Aplicar filtros</button>
+        <a th:href="@{${filtroAction}}" class="btn btn-outline-secondary px-5 mx-3 ">Quitar filtros</a>
+      </div>
+
+
+    </div>
+  </form>
+
+  <script>
+    function updatePrecioLabel() {
+      const min = document.getElementById("precioMin");
+      const max = document.getElementById("precioMax");
+      const minLabel = document.getElementById("minPrecioLabel");
+      const maxLabel = document.getElementById("maxPrecioLabel");
+
+      if (parseInt(min.value) > parseInt(max.value)) {
+        min.value = max.value;
+      }
+
+      minLabel.textContent = min.value;
+      maxLabel.textContent = max.value;
+    }
+
+    window.onload = updatePrecioLabel;
+  </script>
+</div>

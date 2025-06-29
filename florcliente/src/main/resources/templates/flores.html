@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head :: head"></head>
+<body>
+
+<!-- NAVBAR -->
+<header th:replace="fragments/navbar :: navbar"></header>
+
+<!-- MIGAS DE PAN -->
+<nav aria-label="breadcrumb" class="px-5 py-2 ms-5 mt-4">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a href="/home" class="text-decoration-none text-rosita">Inicio</a>
+        </li>
+        <li class="breadcrumb-item active text-capitalize" aria-current="page">
+            Flores
+        </li>
+    </ol>
+</nav>
+<section class="container-fluid px-5 py-4">
+    <h2 class="mb-3">Flores</h2>
+</section>
+
+<div th:replace="fragments/direccionEntrega :: selectorUbicacion"></div>
+
+<!-- FILTRO Y CATEGORÍAS -->
+<div th:replace="fragments/filtro :: filtroBusqueda(filtroAction='/flores')"></div>
+
+<!-- SECCIÓN DE PERSONALIZACIÓN -->
+<section class="container-fluid px-5 py-4 personaliza-ramos">
+    <h2 class="mb-3">Personaliza tu ramo</h2>
+    <p>Selecciona <strong>mínimo 6 flores</strong> del mismo floricultor para crear tu ramo personalizado.</p>
+
+    <form method="post" th:action="@{/carrito/agregar-ramos}" id="formRamo">
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-6 g-4 mt-3">
+            <div class="col" th:each="producto, iterStat : ${productos}">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="product-image-container">
+                        <img th:src="${producto.imagen}" class="card-img-top" th:alt="${producto.nombre}" />
+                    </div>
+                    <div class="card-body px-2">
+                        <input type="checkbox" class="selector-flor form-check-input mb-2"
+                               th:id="'producto-' + ${iterStat.index}"
+                               name="productoIds"
+                               th:value="${producto.idProducto}"
+                               th:data-floricultor="${producto.floricultor.email}" />
+                        <label th:for="'producto-' + ${iterStat.index}" class="form-check-label">
+                            <h6 class="card-title text-rosita d-inline" th:text="${producto.nombre}">Nombre</h6>
+                        </label>
+                        <p class="mb-1 small text-muted" th:text="'Floricultor: ' + ${producto.floricultor.nombre}"></p>
+                        <p class="fw-semibold mb-2">Desde: <span th:text="${producto.precio} + '€'">0€</span></p>
+                        <label for="cantidad">Cantidad:</label>
+                        <input type="number" name="cantidades" min="1" class="form-control form-control-sm" value="1" />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center mt-4">
+            <button type="submit" class="btn btn-principal px-5">Crear ramo personalizado</button>
+        </div>
+    </form>
+</section>
+
+<!-- FOOTER -->
+<footer th:replace="fragments/footer :: footer"></footer>
+
+<!-- JS para limitar selección -->
+<script>
+    document.getElementById("formRamo").addEventListener("submit", function (e) {
+        const checkboxes = document.querySelectorAll('.selector-flor');
+        let floricultorSeleccionado = null;
+        let totalCantidad = 0;
+    
+        // Eliminar antiguos inputs hidden de cantidades (por si reenvía varias veces)
+        document.querySelectorAll('input[name="cantidades"][type="hidden"]').forEach(el => el.remove());
+    
+        for (const cb of checkboxes) {
+            if (cb.checked) {
+                const floricultor = cb.dataset.floricultor;
+    
+                // Verifica que todos los floricultores son iguales
+                if (!floricultorSeleccionado) {
+                    floricultorSeleccionado = floricultor;
+                } else if (floricultor !== floricultorSeleccionado) {
+                    alert("Todas las flores deben ser del mismo floricultor.");
+                    e.preventDefault();
+                    return;
+                }
+    
+                const cantidadInput = cb.closest('.card-body').querySelector('input[name="cantidades"]');
+                const cantidad = parseInt(cantidadInput.value) || 0;
+    
+                if (cantidad < 1) {
+                    alert("La cantidad debe ser al menos 1.");
+                    e.preventDefault();
+                    return;
+                }
+    
+                totalCantidad += cantidad;
+    
+                // Crear input hidden para esta cantidad
+                const hiddenCantidad = document.createElement("input");
+                hiddenCantidad.type = "hidden";
+                hiddenCantidad.name = "cantidades";
+                hiddenCantidad.value = cantidad;
+                this.appendChild(hiddenCantidad);
+            }
+        }
+    
+        if (totalCantidad < 6) {
+            alert("Debes seleccionar al menos 6 flores (sumando cantidades).");
+            e.preventDefault();
+            return;
+        }
+    });
+    </script>
+<div th:replace="fragments/scripts :: scriptsUbicacion"></div>
+  
+</body>
+</html>

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head :: head"></head>
+<body>
+
+<!-- NAVBAR -->
+<header th:replace="fragments/navbar :: navbar"></header>
+<nav aria-label="breadcrumb" class="px-5 py-2 ms-5 mt-4">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item">
+        <a href="/home" class="text-decoration-none text-rosita">Inicio</a>
+      </li>
+      <li class="breadcrumb-item active text-capitalize" aria-current="page">
+        Tienda
+      </li>
+    </ol>
+  </nav>
+<div th:replace="fragments/direccionEntrega :: selectorUbicacion"></div>
+<div th:replace="fragments/categorizacionCircular :: categoriasCirculares"></div>
+<div th:replace="fragments/filtro :: filtroBusqueda(filtroAction='/tienda')"></div>
+<section class="container-fluid py-5 px-5 mx-auto">
+    <h3 class="mb-4">Todas las flores</h3>
+  
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-6 g-4 mt-3">
+      <div class="col" th:each="producto : ${productos}">
+        <a th:href="@{/producto/{id}(id=${producto.idProducto})}" style="text-decoration: none; color: inherit;">
+          <div class="card h-100 border-0 shadow-sm">
+            <div class="product-image-container">
+              <img th:src="${producto.imagen}" class="card-img-top" th:alt="${producto.nombre}" />
+            </div>
+            <div class="card-body px-2">
+              <h6 class="card-title mb-0 text-rosita" th:text="${producto.nombre}">Nombre</h6>
+              <p class="mb-1 small text-muted" th:text="${producto.floricultor.nombre}">Floricultor</p>
+              <p class="fw-semibold mb-0">Desde: <span th:text="${producto.precio} + '€'">0€</span></p>
+              <span class="stretched-link"></span>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+<!-- FOOTER -->
+<footer th:replace="fragments/footer :: footer"></footer>
+<div th:replace="fragments/scripts :: scriptsUbicacion"></div>
+</body>
+</html>

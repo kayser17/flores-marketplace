@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head th:replace="fragments/head :: head"></head>
+  <body>
+    <header th:replace="fragments/navbar :: navbar"></header>
+
+    <div class="container-fluid py-5 px-5 mx-auto">
+      <h2 class="mb-5">Nuestros floricultores</h2>
+
+      <div th:each="floricultor : ${floricultores}" class="mb-5">
+        <div class="d-flex align-items-center mb-3">
+          <h4
+            class="text-rosita mb-0 me-3"
+            th:text="${floricultor.nombre} + ' que vende en la zona de ' + ${floricultor.ubicacion}"
+          >
+            Nombre - Ciudad
+          </h4>
+    
+          <!-- Valoraciones -->
+          <div
+            class="text-warning small"
+            th:if="${floricultor.numeroValoraciones > 0}"
+          >
+            <span
+              th:with="media=${floricultor.mediaValoraciones != null ? floricultor.mediaValoraciones : 0}"
+            >
+              <span class="text-muted">
+                <span th:text="${#numbers.formatDecimal(media, 1, 1)}"></span>
+                /5 (<span th:text="${floricultor.numeroValoraciones}"></span>
+                valoración<span th:if="${floricultor.numeroValoraciones > 1}"
+                  >es</span
+                >)
+              </span>
+            </span>
+          </div>
+          <!-- Si no hay valoraciones -->
+        <div
+        class="text-muted "
+        th:if="${floricultor.numeroValoraciones == 0}"
+      >
+        Aún no hay valoraciones
+      </div>
+        </div>
+    
+        
+
+        <section class="container-fluid px-0 mx-auto">
+          <div
+            class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-6 g-4"
+          >
+            <div class="col" th:each="producto : ${floricultor.productos}">
+              <div class="card h-100 border-0 shadow-sm">
+                <div class="product-image-container">
+                  <a
+                    th:href="@{/producto/{id}(id=${producto.idProducto})}"
+                    style="text-decoration: none; color: inherit"
+                  >
+                    <img
+                      th:src="@{${producto.imagen}}"
+                      class="card-img-top"
+                      th:alt="${producto.nombre}"
+                    />
+                  </a>
+                </div>
+                <div class="card-body px-2">
+                  <h6
+                    class="card-title mb-0 text-rosita"
+                    th:text="${producto.nombre}"
+                  >
+                    Nombre
+                  </h6>
+                  <p
+                    class="mb-1 small text-muted"
+                    th:text="${producto.floricultor.nombre}"
+                  >
+                    Floricultor
+                  </p>
+                  <p class="fw-semibold mb-0">
+                    Desde: <span th:text="${producto.precio} + '€'">0€</span>
+                  </p>
+                  <a
+                    th:href="@{/producto/{id}(id=${producto.idProducto})}"
+                    class="stretched-link"
+                  ></a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <footer th:replace="fragments/footer :: footer"></footer>
+  </body>
+</html>

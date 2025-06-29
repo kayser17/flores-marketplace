@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="fragments/head :: head"></head>
+
+<body>
+
+  <!-- NAVBAR -->
+  <header th:replace="fragments/navbar :: navbar"></header>
+
+  <div class="py-5">
+    <h1 class="text-center mb-4" th:text="${producto.idProducto} != null ? 'Editar Producto' : 'Añadir Nuevo Producto'">
+    </h1>
+
+    <form
+      th:action="${producto.idProducto} != null ? @{'/producto/editar'} : @{'/productos/crear/' + ${floricultor.email}}"
+      th:object="${producto}" method="post" class="form w-50 mx-auto border p-4 rounded shadow-sm">
+
+      <!-- Campo oculto solo si es edición -->
+      <input type="hidden" th:if="${producto.idProducto} != null" th:field="*{idProducto}" />
+      <input type="hidden" th:field="*{floricultor.email}" />
+
+      <div class="form-group mb-3">
+        <label for="nombre" class="form-label">Nombre</label>
+        <input type="text" id="nombre" th:field="*{nombre}" class="form-control" required />
+      </div>
+
+      <div class="form-group mb-3">
+        <label for="tipoFlor" class="form-label">Tipo de Flor</label>
+        <select id="tipoFlor" th:field="*{tipoFlor}" class="form-control" required>
+          <option value="" disabled selected>Selecciona una opción</option>
+          <option value="rosa">Rosa</option>
+          <option value="tulipán">Tulipán</option>
+          <option value="girasol">Girasol</option>
+          <option value="lirio">Lirio</option>
+          <option value="margarita">Margarita</option>
+          <option value="peonía">Peonía</option>
+          <option value="otro">Otro tipo</option>
+        </select>
+      </div>
+
+      <!-- Ocasión -->
+      <div class="form-group mb-3">
+        <label for="ocasion" class="form-label">Ocasión</label>
+        <select id="ocasion" th:field="*{ocasion}" class="form-control" required>
+          <option value="" disabled selected>Selecciona una ocasión</option>
+          <option value="Cumpleaños">Cumpleaños</option>
+          <option value="Aniversario">Aniversario</option>
+          <option value="Condolencias">Condolencias</option>
+          <option value="Nacimiento">Nacimiento</option>
+          <option value="Agradecimiento">Agradecimiento</option>
+          <option value="San Valentín">San Valentín</option>
+        </select>
+      </div>
+
+
+      <div class="form-group mb-3">
+        <label for="precio" class="form-label">Precio (€)</label>
+        <input type="number" id="precio" th:field="*{precio}" step="0.01" min="0" class="form-control" required
+          oninput="validarDecimales(this)" pattern="^\d+(\.\d{1,2})?$" />
+      </div>
+
+      <div class="form-group mb-3">
+        <label for="color" class="form-label">Color de la Flor</label>
+        <select id="color" th:field="*{color}" class="form-control" required>
+          <option value="" disabled selected>Selecciona un color</option>
+          <option value="rojo">Rojo</option>
+          <option value="rosa">Rosa</option>
+          <option value="blanco">Blanco</option>
+          <option value="amarillo">Amarillo</option>
+          <option value="naranja">Naranja</option>
+          <option value="violeta">Violeta</option>
+          <option value="azul">Azul</option>
+          <option value="verde">Verde</option>
+          <option value="multicolor">Multicolor</option>
+          <option value="otro">Otro</option>
+        </select>
+      </div>
+
+      <div class="form-group mb-4">
+        <label for="cantidad" class="form-label">Cantidad Disponible</label>
+        <input type="number" id="cantidad" th:field="*{cantidad}" class="form-control" min="0" required />
+      </div>
+      <div class="form-check mb-4">
+        <input type="checkbox" id="esRamo" th:field="*{esRamo}" class="form-check-input" />
+        <label for="esRamo" class="form-check-label">Es un ramo</label>
+      </div>
+
+      <div class="text-center">
+        <button type="submit" class="btn px-4 py-2" style="background-color: #D72684; color: white;"
+          th:text="${producto.idProducto} != null ? 'Guardar cambios' : 'Crear Producto'">
+          Crear Producto
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- FOOTER -->
+  <footer th:replace="fragments/footer :: footer"></footer>
+</body>
+
+</html>

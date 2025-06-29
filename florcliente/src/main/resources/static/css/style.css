@@ -1,0 +1,348 @@
+/* Barra de navegación */
+.navbar {
+    background-color: #004d40;
+    color: white;
+    padding: 15px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.navbar a {
+    color: white;
+    font-weight: 500;
+    text-decoration: none;
+    margin-left: 15px;
+}
+
+.navbar a:hover {
+    text-decoration: underline;
+}
+
+.navbar-title {
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+.sin-margen-menu{
+    margin-top: -25px;
+    margin-bottom: -25px;
+    border-bottom: px solid #000000;
+
+}
+/* Contenedor principal para las vistas */
+.container {
+    max-width: 1000px;
+    margin: 40px auto;
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Contenedor reducido*/
+.container-sm {
+    max-width: 400px;
+    margin: 80px auto;
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+/* Tablas (catálogo, pedidos, etc.) */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+th {
+    background-color: #e0f2f1;
+    color: #00695c;
+}
+
+th, td {
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
+    text-align: left;
+}
+
+/* Formularios alineados*/
+.form {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.form-group {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="number"],
+select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+/* Botones principales */
+.button {
+    background-color: #004d40;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    cursor: pointer;
+    font-weight: bold;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.button:hover {
+    background-color: #00695c;
+}
+
+/* Botones secundarios, como volver atrás */
+.button.secondary {
+    background-color: #e0e0e0;
+    color: #333;
+    padding: 10px 20px;
+    border-radius: 6px;
+    text-decoration: none;
+    display: inline-block;
+    margin-top: 20px;
+}
+
+/* Lista de inventario con productos */
+.inventory-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+.inventory-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #fafafa;
+    border: 1px solid #ddd;
+    padding: 12px 16px;
+    border-radius: 6px;
+    margin-bottom: 10px;
+}
+
+.delete-button {
+    color: #c62828;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.delete-button:hover {
+    text-decoration: underline;
+}
+
+/* Estilo para la lista de pedidos */
+.pedido-lista {
+    list-style-type: none;
+    padding: 0;
+}
+
+.pedido-item {
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 15px;
+    margin-bottom: 10px;
+    font-size: 15px;
+}
+
+/* Centrado de botones en pantallas */
+.button-bar {
+    text-align: center;
+    margin-top: 20px;
+}
+
+/* Tabla de detalle del producto */
+.detail-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.detail-table th {
+    text-align: left;
+    padding: 10px;
+    background-color: #e0f2f1;
+    color: #00695c;
+    width: 30%;
+}
+
+.detail-table td {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+.product-image-container {
+    width: 100%;
+    height: 250px; /* ajusta esto según el alto que quieras */
+    overflow: hidden;
+  }
+  
+  .product-image-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .card:hover {
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    transform: translateY(-4px);
+    transition: all 0.2s ease-in-out;
+  }
+  .miniatura {
+    width: 60px;
+    height: 60px;
+    background-color: #ccc;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+  .sidebar-compra {
+    background-color: #f7f7f7;
+    padding: 20px;
+    border-radius: 10px;
+  }
+  .precio {
+    font-weight: bold;
+    font-size: 18px;
+  }
+  .btn-principal {
+    background-color: #D72684;
+    color: white;
+    border: none;
+  }
+  .btn-principal:hover {
+    background-color: #b51c6d;
+  }
+  .tag-size, .color-opcion {
+    border: 1px solid #ccc;
+    padding: 5px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    margin: 5px;
+  }
+  .tag-size.active, .color-opcion.active {
+    border: 2px solid #D72684;
+  }
+  .info-verde {
+    color: green;
+  }
+  .contador {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 30px;
+    height: 32px;
+    font-weight: 500;
+    font-size: 16px;
+    margin: 0 4px;
+  }
+  
+  .text-rosita {
+    color: #D72684 !important;
+  }
+  .badge-ramo {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background-color: #D72684;
+  color: white;
+  font-size: 12px;
+  font-weight: bold;
+  padding: 5px 10px;
+  border-radius: 20px;
+  z-index: 1;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+.imagen-producto-container {
+    width: 100%;
+    max-width: 400px;
+    height: 400px;
+    overflow: hidden;
+    border-radius: 10px;
+  }
+  
+  .imagen-producto-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+
+  input[type="range"].custom-range {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 4px;
+    background: #e9ecef;
+    border-radius: 10px;
+    outline: none;
+  }
+  
+  input[type="range"].custom-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #e91e63;
+    cursor: pointer;
+    box-shadow: 0 0 0 3px rgba(233,30,99,0.3);
+    transition: box-shadow 0.2s;
+  }
+  
+  input[type="range"].custom-range::-moz-range-thumb {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #e91e63;
+    cursor: pointer;
+  }
+  
+
+/*Cuenta Editar y Eliminar */
+.btn-editar {
+  background-color: #2196f3;
+  color: white;
+  font-weight: 500;
+  border: none;
+  border-radius: 8px;
+  padding: 6px 14px;
+  transition: background-color 0.2s ease;
+}
+
+.btn-editar:hover {
+  background-color: #1976d2;
+}
+
+.btn-eliminar {
+  background-color: #f44336;
+  color: white;
+  font-weight: 500;
+  border: none;
+  border-radius: 8px;
+  padding: 6px 14px;
+  transition: background-color 0.2s ease;
+}
+
+.btn-eliminar:hover {
+  background-color: #c62828;
+}
